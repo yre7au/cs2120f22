@@ -51,7 +51,13 @@ really think about what you're saying with each word in your proof.
 See how the English presents the "story" of the formal proof in more
 natural, human, terms.
 
-ANSWER HERE:
+ANSWER HERE: Suppose Socrates is an object of some type, Person, and that isMortal 
+is one-place predicate taking any Person, p, as an argument, and that
+reduces to a proposition, denoted (isPerson p), that we understand as
+asserting that the particular person, p, is mortal. Next, we take
+everyone is mortal as a proof that all persons are mortal. Finally, we see that we 
+can can use this proof/truth by *applying* it
+to any particular person, p, to obtain a proof/truth that p is mortal. 
 -/
 
 
@@ -71,22 +77,21 @@ To do so, uncomment the following block of expressions then fill
 in blanks to complete this task.
 -/
 
-/- Uncomment this block to answer the question
+/- Uncomment this block to answer the question -/
 variable Person : Type
-variable Likes : _        -- a predicate with two Person arguments
-variable Jealous : _      -- same thing here  
+variable Likes : Person → Person → Prop        -- a predicate with two Person arguments
+variable Jealous : Person → Person → Prop      -- same thing here  
 variable Triangle :       -- note definition extends to next line
-  ∀ (p1 p2 p3 : Person), _  
-variables ed hannah mel : _
-variable likes_ed_hannah : _
-variable likes_hannah_mel : _
+  ∀ (p1 p2 p3 : Person), Likes p1 p2, Likes p2 p3 → Jealous p1 p3  
+variables ed hannah mel : Person
+variable likes_ed_hannah : Likes ed hannah
+variable likes_hannah_mel : Likes hannah mel
 -- Finally write and use #check to check an expression that proves that ed is 
 -- jealous of mel.
 -- To ANSWER, fill in the _ with your expression. 
 -- HINT "Apply" what you know.
--/
 
-#check _
+#check Triangle ed hannah
 
 
 /- #3: Proofing a propositions involving ∀ and ∨
@@ -97,6 +102,10 @@ the methods of inference we've covered: ∀ (P Q : Prop), P ∧ Q → Q ∨ P.
 Do read that proposition carefully, please. You don't need to write a
 long proof. Keep it concise. Identiy the inference rules you use.
 
+Answer: Assume P and Q are arbitrary but specific propositions, 
+and that we have proof of P ∧ Q. From this proof we can derive
+proofs of P and of Q separately (using and elimination). Then 
+we can apply or introduction to construct a proof of Q ∨ P.
 -/
 
 
@@ -115,4 +124,4 @@ lines, using line breaks and indentation to make the answer readable.
 variable Person : Type
 variable Knows : Person → Person → Prop
 def answer : Prop := 
-    _
+    ∀ (p : Person), ∃ (q : Person), ∃ (r: Person), Knows p q ∧ Knows q r ∧ Knows r p
