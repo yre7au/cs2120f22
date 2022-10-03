@@ -52,12 +52,11 @@ See how the English presents the "story" of the formal proof in more
 natural, human, terms.
 
 ANSWER HERE: Suppose Socrates is an object of some type, Person, and that isMortal 
-is one-place predicate taking any Person, p, as an argument, and that
-reduces to a proposition, denoted (isPerson p), that we understand as
-asserting that the particular person, p, is mortal. Next, we take
-everyone is mortal as a proof that all persons are mortal. Finally, we see that we 
-can can use this proof/truth by *applying* it
-to any particular person, p, to obtain a proof/truth that p is mortal. 
+is one-place predicate taking any Person, p, as an argument, and that reduces to a 
+proposition, denoted (isPerson p), that we understand as asserting that the particular 
+person, p, is mortal. Next, we take everyone is mortal as a proof that all persons are 
+mortal. Finally, we see that we can can use this proof by applying it to any particular 
+person, p, to obtain a proof that p is mortal. 
 -/
 
 
@@ -82,7 +81,7 @@ variable Person : Type
 variable Likes : Person → Person → Prop        -- a predicate with two Person arguments
 variable Jealous : Person → Person → Prop      -- same thing here  
 variable Triangle :       -- note definition extends to next line
-  ∀ (p1 p2 p3 : Person), Likes p1 p2, Likes p2 p3 → Jealous p1 p3  
+  ∀ (p1 p2 p3 : Person), Likes p1 p2 ∧ Likes p2 p3 → Jealous p1 p3  
 variables ed hannah mel : Person
 variable likes_ed_hannah : Likes ed hannah
 variable likes_hannah_mel : Likes hannah mel
@@ -91,8 +90,7 @@ variable likes_hannah_mel : Likes hannah mel
 -- To ANSWER, fill in the _ with your expression. 
 -- HINT "Apply" what you know.
 
-#check Triangle ed hannah
-
+#check Triangle ed hannah mel
 
 /- #3: Proofing a propositions involving ∀ and ∨
 
@@ -121,7 +119,6 @@ You may (and probably should) break up your expression over several
 lines, using line breaks and indentation to make the answer readable.
 -/
 
-variable Person : Type
 variable Knows : Person → Person → Prop
 def answer : Prop := 
     ∀ (p : Person), ∃ (q : Person), ∃ (r: Person), Knows p q ∧ Knows q r ∧ Knows r p
