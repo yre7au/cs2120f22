@@ -5,6 +5,9 @@ drive (File > Save As > local > ...). Submit it to the Quiz1
 assignment on Collab.
 -/
 
+-- Grading: 6 points per part. 15 for completely correct EC.
+
+
 /-
 #1: For each of the following questions give a yes/no answer 
 and then a very brief explanation why that answer is correct.
@@ -68,7 +71,7 @@ B: Why? all introduction
 
 
 #1G. If whenever the wind blows, the leaves move, and 
-the leaves are moving, so the wind is blowing.
+the leaves are moving, then the wind is blowing.
 
 A. yes/no: no
 
@@ -116,7 +119,7 @@ true if and only if Q is true) then if P is true then Q is
 true.
 -/
 
-#check ∀ (P Q : Prop), P ↔ Q → (P → Q)
+#check ∀ (P Q : Prop), (P ↔ Q) → (P → Q)
 
 
 /-
@@ -126,6 +129,7 @@ The #check command can of course be ignored here.
 
 
 -- A
+#check ∀ (n m : ℕ), n < m → m - n > 0
 #check ∀ (n m : ℕ), n < m → m - n > 0
 
 
@@ -137,6 +141,7 @@ n is less than m then the difference, m - n, is positive
 -- B
 
 #check ∃ (n : ℕ), ∀ (m : nat), m >= n
+
 
 /-
 Answer: There's some natural number n that is less
