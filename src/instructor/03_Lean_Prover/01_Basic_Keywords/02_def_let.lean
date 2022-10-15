@@ -26,7 +26,7 @@ Note that when Lean can infer the type of a variable from the
 value bound to it, you can elide the explicit "type judgment"
 -/
 
-def six := 6
+def six := 6      -- type inference
 #check 6
 #check six
 
@@ -63,6 +63,7 @@ to work out the proof value a bit at a time. That's what proof
 using a proof script just as well. 
 -/
 
+def proof_of_true2        : true := true.intro
 def another_proof_of_true : true := begin exact true.intro end
 
 /-
@@ -100,6 +101,10 @@ begin
   exact (and.elim_left h),
 end 
 
+def a_fact' : ∀ (P Q : Prop), P ∧ Q → P :=
+  λ P Q h, and.elim_left h
+
+
 /-
 Here we declare a_fact to be a variable that is meant to be bound
 (to have as its value) of proof of ∀ (P Q : Prop), P ∧ Q → P. The
@@ -131,3 +136,35 @@ the syntax and type of an expression you provide, from the use of
 of a value being bound to a variable is the same as the type that
 the variable expects.
 -/
+
+/-
+Whereas "def" binds a variable to a value in the "global
+environment", the let keyword supports binding of values
+to local variables, followed by evaluation of an expression
+that uses that local variable.
+-/
+
+def x := 1
+#eval x
+
+#eval let a := 1 in a   --evaluates to 1
+
+#check a                -- not defined in global environment
+
+
+-- You can "nest" let expressions
+#reduce  let a := 3 in 
+          let b := 4 in
+            let c := 5 in
+              a*a + b*b = c*c
+
+
+-- Within tactic scripts you leave off the "in" part
+theorem pythag_25 : 3*3 + 4*4 = 5*5 :=
+begin
+  let a := 3,   
+  let b := 4,
+  let c := 5,
+  show a * a + b * b = c * c,
+  exact rfl,
+end

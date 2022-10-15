@@ -153,11 +153,13 @@ get an error if you try to do case analysis
 on the function argument. 
 -/
 
-example : (ℕ → ℕ) → ℕ → ℕ :=
+def app_func : (ℕ → ℕ) → ℕ → ℕ :=
 begin
 assume f n,
 exact (f n),
 end
+
+#eval
 
 /-
 What you have just proved is that if
