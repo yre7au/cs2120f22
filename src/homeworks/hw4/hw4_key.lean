@@ -12,11 +12,9 @@ too. Replace the placeholder (_) with your
 answer.
 -/
 
-def and_associative : Prop := ∀ (P Q R), P ∧ Q ∧ R ↔ (P ∧ Q) ∧ R
-
--- and is right associative
-
-
+def and_associative : Prop := 
+  ∀ (P Q R : Prop), 
+    (P ∧ Q) ∧ R ↔ P ∧ (Q ∧ R) 
 
 
 /- #1B [10 points]
@@ -38,22 +36,46 @@ Hint: unfold and_associative to start.
 
 theorem and_assoc_true : and_associative :=
 begin
-unfold and_associative,     -- expand definition of and_associative
-assume P Q R,               -- ∀ intro
-apply iff.intro _ _,        -- iff intro 
+unfold and_associative,
+assume P Q R,
+apply iff.intro _ _,
 
 -- forward
-assume pqr,                 -- assume premise 
-cases pqr with p qr,        -- "unbox" proofs of P and of Q ∧ R
-cases qr with q r,          -- "unbox" proofs of Q and R
-let pq := (and.intro p q),  -- "rebox" proofs of P and of Q to prove P ∧ Q
-apply (and.intro pq r),     -- "box" that up with a proof of r
--- that complete the proof in the forward direction
+assume h,
 
--- reverse 
+/-
+let pq : P ∧ Q := and.elim_left h,
+let r : R := and.elim_right h,
+let p : P := and.elim_left pq,
+let q : Q := and.elim_right pq,
+-/
 
+cases h with pq r,
+cases pq with p q,
 
+/-
+apply and.intro _ _,
+cases h with pq r,
+cases pq with p q,
+exact p,
+apply and.intro _ _,
+exact and.elim_right(and.elim_left h),
+exact (and.elim_right h),
+-/
+
+/-
+cases h with pq r,
+cases pq with p q,
+-/
+apply and.intro p (and.intro q r),
+
+-- Reverse
+assume h,
+cases h with p qr,
+cases qr with q r,
+exact (and.intro (and.intro p q) r),
 end
+
 
 
 
@@ -64,7 +86,7 @@ analogous to the proposition about ∧ in #1.
 -/
 
 def or_associative : Prop := 
-  _
+  ∀ (P Q R : Prop), P ∨ (Q ∨ R) ↔ (P ∨ Q) ∨ R
 
 
 /- #2B [10 points]
@@ -82,6 +104,38 @@ Complete the following formal proof.
 
 theorem or_associative_true : or_associative :=
 begin
+unfold or_associative,
+assume P Q R,
+
+
+apply iff.intro _ _,
+
+-- forward
+assume h,
+apply or.elim h _ _,
+
+-- case P
+assume p,
+apply or.inl _,
+exact (or.inl p), 
+
+-- case Q or R
+assume qr,
+apply or.elim qr _ _,
+
+-- case Q
+assume q,
+apply or.inl _,
+exact (or.inr q),
+
+-- case R
+assume r,
+apply or.inr r,
+
+-- reverse
+ 
+-- TO DO
+
 end
 
 
@@ -90,63 +144,8 @@ Write a formal statement of the proposition.
 -/
 
 def arrow_transitive : Prop :=
-  _
+  ∀ (P Q R : Prop), (P → Q) → (Q → R) → (P → R)
 
-
-/-
-If there smoke there's fire
-If there's fire there's light
-If there's light, everything's good
-And there's smoke. So everything's good.
-Right?
--/
-
--- The basic propositions
-variables (Smoke Fire Light Good : Prop)
--- The implications
-variables (sf : Smoke → Fire) (fl : Fire → Light) (lg : Light → Good)
--- The premise
-variable (s : Smoke)
-
-example : ∀ (S F L G : Prop), (S → F) → (F → L) → (L → G) → S → G:=
-begin
-assume S F L G,   -- assume the basic propositions
-assume sf fl lg,  -- assume the implication hypotheses
-assume s,         -- assume there's smoke, now show everything good
-
-/- this works
-apply lg,
-apply fl,
-apply sf,
-exact s
--/
-
--- so does this
-exact lg (fl (sf s)),
--- make sure you understand it both ways
--- understand arrow elimination
--- arrow elimination is like function application!
-end
-
-
-/-
-Eercise with negation
--/
-
-example :0 ≠ 1 :=
-begin
-assume p,
-cases p,
-end 
-
-
-example : ∀ P, ¬(P ∧ ¬P) :=
-begin
-assume P,
-assume pandnp,
-cases pandnp with p np,
-apply false.elim (np p),
-end
 
 /- #3B [10 points]
 
@@ -166,6 +165,20 @@ yourself a proof of its conclusion.
 Write a formal proof of it.
 -/
 
+example : arrow_transitive :=
+begin
+  unfold arrow_transitive,
+  assume P Q R,
+  assume pq : P → Q,
+  assume qr : Q → R,
+  assume p : P,
+  let q : Q := (pq p),
+  let r : R := (qr q),
+  -- assumption,
+  -- apply r,
+  exact r,
+end 
+
 
 /- #4
 Suppose that if it's raining then the streets
@@ -183,12 +196,32 @@ def contrapositive : Prop :=
   ∀ (Raining Wet : Prop), 
     (Raining → Wet) → (¬Raining → ¬Wet)
 
+/-
+The proposition defined here isn't valid. It's
+one of the classical fallacies, one that we saw
+starting with propositional logic. Contrapositive
+says if (R → W) → (¬W → ¬R). Consider a concrete
+case: If whenever it rains R, the streets are wet
+(W), then if the streets are not wet (¬W) then it
+must not be raining (¬R).
+-/
+
+def contrapositive_corrected : Prop :=
+  ∀ (Raining Wet : Prop), 
+    (Raining → Wet) → (¬Wet → ¬Raining)
 
 /- #4B [10 points]. 
 -/
 
-theorem contrapositive_valid : contrapositive :=
+theorem contrapositive_valid : contrapositive_corrected :=
 begin
+unfold contrapositive_corrected,
+assume R W h,
+assume nw,
+assume r,
+let w := h r,
+contradiction,
+end
 
 /- #4C [5 points]. 
 
@@ -213,11 +246,25 @@ theorem demorgan1 :
 begin
 assume em X Y nxory,
 cases (em X) with x nx,
-let foo := or.intro_left Y x,
-_
+
+-- case where X is true
+let xory : X ∨ Y := or.inl x,
+contradiction,
+
+-- case where X is false
+cases (em Y) with y ny,
+
+  -- case where Y is true
+let xory : X ∨ Y := or.inr y,
+contradiction,
+
+  -- case where Y is false
+apply and.intro nx ny,
+
 end
 
-/-
+/- OPTIONAL, NOT NECESSARY FOR MIDTERM EXAM
+
 A comment on or.intro_left and or.intro_right.
 In Lean each of these takes two arguments: a
 proof of the disjunct -- the proposition on 
