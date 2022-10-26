@@ -68,7 +68,7 @@ can use the simpler or.inl p and or.inr q
 constructors. 
 -/
 
-example : P ∨ Q → (P → R) → (Q → R) → R :=
+example : P ∨ Q → R :=
 begin
 assume h,
 cases h with p q,
@@ -95,15 +95,11 @@ proof of P ∨ ¬P, *on which we can
 then do case analysis*.
 -/
 
-#check @classical.em P
-
 example : ¬¬P → P :=
 begin
 assume nnp,
 cases (classical.em P) with p np, -- here!
 -- make sure you can finish this proof!
-exact p,
-contradiction,
 end
 
 /-
@@ -157,13 +153,11 @@ get an error if you try to do case analysis
 on the function argument. 
 -/
 
-def app_func : (ℕ → ℕ) → ℕ → ℕ :=
+example : (ℕ → ℕ) → ℕ → ℕ :=
 begin
 assume f n,
 exact (f n),
 end
-
-#eval
 
 /-
 What you have just proved is that if
@@ -186,6 +180,7 @@ on a proof of an implication or universal
 generalization, because these things are
 basically functions.
 -/
+end
 
 example : (P → Q) → P → Q :=
 begin
@@ -208,3 +203,13 @@ does not work. Independent of Lean,
 you can't do "case analysis" on things
 of these kind in predicate logic.  
 -/
+
+variables x y : nat
+example : (x = y → 0 = 1) → ¬(x=y) :=
+begin
+assume h,
+show x = y → false,
+assume xy,
+let zo := h xy,
+cases zo,
+end
